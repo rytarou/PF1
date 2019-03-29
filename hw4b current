@@ -113,4 +113,299 @@ void ChooseFighters(string playerFighter, string opponentFighter) {
     cin >> opponentFighter;
     opponentFighter = ToLowerCase(opponentFighter);
     while (opponentFighter != "link" && opponentFighter != "samus" && opponentFighter != "pikachu" &&
- 
+           opponentFighter != "king_dedede") {
+        cout << "Your choice is invalid go back and choose a correct fighter!\n";
+        cin >> opponentFighter;
+        opponentFighter = ToLowerCase(opponentFighter);
+    }
+}
+
+//---------------------------------------------------------------------------
+// Name: SetupFighter
+// Parameters: ref string fighter, ref double hp, ref double attackDamage,
+// ref double specialDamage
+// Returns: none
+// Purpose: This function assigns the player or opponent's attribute variables
+// based on which fighters the user picked. Assume that the fighter string is
+// lowercase when passed, and correct the capitalization in the string
+//---------------------------------------------------------------------------
+void SetupFighter(string fighter, double hp, double attackDamage, double specialDamage) {
+    if (fighter == "link") {
+        hp = MAX_HP_LINK;
+        attackDamage = AD_LINK;
+        specialDamage = SD_LINK;
+    }
+    else if (fighter == "samus") {
+        hp = MAX_HP_SAMUS;
+        attackDamage = AD_SAMUS;
+        specialDamage = SD_SAMUS;
+    }
+    else if (fighter == "pikachu") {
+        hp = MAX_HP_PIKACHU;
+        attackDamage = AD_PIKACHU;
+        specialDamage = SD_PIKACHU;
+    }
+    else if (fighter == "king_dedede") {
+        hp = MAX_HP_KING_DEDEDE;
+        attackDamage = AD_KING_DEDEDE;
+        specialDamage = SD_KING_DEDEDE;
+    }
+}
+
+
+
+
+//---------------------------------------------------------------------------
+// Name: CalculateDamage
+// Parameters: ref double hp, const int attackChoice, const double
+// attackDamage, const double specialDamage
+// Returns: double - damage done to the player
+// Purpose: This function takes player A's health, as well as player B's
+// attack damage, special damage, and attack choice. Based on the attack
+// choice, the appropriate damage should be subtracted from player A's
+// health. Returns the damage done
+//---------------------------------------------------------------------------
+double CalculateDamage (double hp, const int attackChoice, const double attackDamage, const double specialDamage) {
+    if (attackChoice == 1) {
+        hp = (hp - attackDamage);
+    }
+    if (attackChoice == 2) {
+        hp = (hp - specialDamage);
+    }
+    return hp;
+}
+
+
+//---------------------------------------------------------------------------
+// Name: RNG (Random Number Generator)
+// Parameters: const int lower bound, const int upper bound
+// Returns: integer - the randomly selected attack choice
+// Purpose: It might be useful to quickly get a random number within a
+// certain range. This function should return a random number between
+// the lower bound and upper bound values.
+// The range should be inclusive, i.e. the bounds are possible values
+// NOTE: The provided function DisplayExperiencePoints() also uses
+// RNG(), so be sure to uncomment the lines in that function when needed.
+//---------------------------------------------------------------------------
+
+
+
+
+//---------------------------------------------------------------------------
+// Name: CheckGameOver
+// Parameters: const double hp1, const double hp2
+// Returns: bool - true if the game should end
+// Purpose: This function checks both players' health points. If either
+// player's hp is at or below 0, the game is over.
+//---------------------------------------------------------------------------
+
+
+
+
+//---------------------------------------------------------------------------
+// Name: MatchResults
+// Parameters: const string fighter1, const double hp1,
+// const string fighter2, const double hp2
+// Returns: bool - true if player won the match.
+// Purpose: This function decides how the match should be reported.
+// It should inform the player of who beat who (or if it was a tie),
+// and report another interesting statistic, like final hp of both players.
+//---------------------------------------------------------------------------
+
+
+
+
+
+int main() {
+	// Player variables
+	string playerFighter = "";		// Name of Player's Chosen Fighter
+	double playerHP = 0;			// Player Health Points
+	double playerAttackDamage = 0;	// Damage done by Attack
+	double playerSpecialDamage = 0;	// Damage done by Special Move
+	int playerAttackChoice = 0;		// Which attack? 1 for attack, 2 for special move
+	bool playerRecovering = false;	// True if player is recovering from special move
+
+	// Opponent Variables
+	string opponentFighter = "";
+	double opponentHP = 0;
+	double opponentAttackDamage = 0;
+	double opponentSpecialDamage = 0;
+	int opponentAttackChoice = 0;
+	bool opponentRecovering = false;
+
+	// Other variables
+	bool gameOver = false;
+	bool playerWon = false;
+	int roundCount = 1;				// round counter
+	double damage = 0;
+
+	// Initialize the random seed
+	srand((unsigned int) time(NULL));
+
+	// Welcome message
+	cout << endl;
+	cout << "----------===================================----------" << endl;
+	cout << "                   SUPER SMASH BROS.         " << endl;
+	cout << "----------===================================----------" << endl;
+	// Brawl may not have been the best game, but it had the best music!
+	cout << "Intro theme:\n   https://www.youtube.com/watch?v=PInuVXgxO1g\n" << endl;
+
+	// Setup Match
+	ChooseFighters(playerFighter, opponentFighter);
+
+	SetupFighter(playerFighter, playerHP, playerAttackDamage, playerSpecialDamage);
+	SetupFighter(opponentFighter, opponentHP, opponentAttackDamage, opponentSpecialDamage);
+
+	// Main Game loop
+	while (!gameOver) {
+		// Round begin
+		cout << "\n\n\n_____ROUND " << roundCount << "________________________________" << endl;
+
+		//! Player Attack
+		// Only calculate damage if the player gets to attack
+		if(GetAttack(P1, playerAttackChoice, playerRecovering)) {
+			// calculate damage done to opponent by player
+			damage = CalculateDamage(opponentHP, playerAttackChoice, playerAttackDamage, playerSpecialDamage);
+			ReportDamage(playerFighter, playerAttackChoice, damage, opponentFighter);
+		}
+
+		//! Opponent Attack
+		// Opponent attacks randomly, unless they are recovering from special
+		//TODO: opponentAttackChoice = RNG(ATTACK, SPECIAL_MOVE);
+		if (GetAttack(CPU, opponentAttackChoice, opponentRecovering)) {
+			// calculate damage done to player by opponent
+			//TODO: damage = CalculateDamage(playerHP, opponentAttackChoice, opponentAttackDamage, opponentSpecialDamage);
+			ReportDamage(opponentFighter, opponentAttackChoice, damage, playerFighter);
+		}
+
+		// Show the round results
+		DisplayRoundResults(playerFighter, playerHP, opponentFighter, opponentHP);
+		// keep track of round number
+		roundCount++;
+		// Loop until there is a winner
+		//TODO: gameOver = CheckGameOver(playerHP, opponentHP);
+		// Give the player a chance to look at the round results
+		if (!gameOver) {
+			PressEnterToContinue();
+		}
+	}
+
+	// Display the match results
+	DisplayEndGame();
+	cout << "\n~~~~~Match Results~~~~~\n" << endl;
+	//TODO: playerWon = MatchResults(playerFighter, playerHP, opponentFighter, opponentHP);
+
+	// Give them some experience!
+	DisplayExperiencePoints(playerWon, playerHP);
+
+    return 0;
+}
+
+
+// **********************************************************************
+// These functions are provided for you, and it should not be necessary
+// to make changes. If you want to make small changes without changing
+// the main program, then that is okay.
+// They are listed roughly in order of use in the main function.
+// **********************************************************************
+
+
+void PressEnterToContinue() {
+	cout << "[Press ENTER to continue...]  ";
+	cin.getline(buffer, bufferSize);
+	cin.ignore();
+}
+
+void Sleep(const unsigned int _millis) {
+	this_thread::sleep_for(chrono::milliseconds(_millis));
+}
+
+// This function gets user input to select the player's attack,
+// and decides if they get to attack this turn. It does the same for
+// opponent, minus the attack choosing phase.
+// Returns true if player gets to attack
+bool GetAttack(const int whichPlayer, int &attackChoice, bool &recovering) {
+	bool attackThisTurn = false;
+
+	if (whichPlayer == P1) {
+		// Player chooses their attack, unless they are recovering from special
+		cout << "\n~~Player Attack:" << endl;
+		// Let user choose their attack
+		cout << "Choose your attack! Enter 1 for Attack or 2 for Special Move \n" << PROMPT;
+		cin >> attackChoice;
+		while (attackChoice != ATTACK && attackChoice != SPECIAL_MOVE) {
+			cout << "#! Please select 1 for Attack, or 2 for Special Move." << endl;
+			cout << "Choose your attack! (1-2) \n" << PROMPT;
+			cin >> attackChoice;
+		}
+	} else if (whichPlayer == CPU) {
+		cout << "\n~~Opponent Attack:" << endl;
+	}
+
+	if (recovering) {
+		if (whichPlayer == P1)
+			cout << "You're still recovering from your special move, you can't attack!" << endl;
+		else if (whichPlayer == CPU)
+			cout << "Opponent is recovering, they cannot attack." << endl;
+		recovering = false;	// reset
+
+		Sleep(1500);
+	} else {
+		// player needs to recover from special moves
+		if (attackChoice == SPECIAL_MOVE)
+			recovering = true;
+		attackThisTurn = true;
+	}
+	return attackThisTurn;
+}
+
+// Reports damage and attack done by fighter1 against fighter2
+void ReportDamage(const string fighter1, const int attackChoice, double damage, const string fighter2) {
+	cout << fighter1 << " hit " << fighter2
+		 << " with " << (attackChoice == ATTACK ? "Attack" : "Special Move")
+		 << " for " << setprecision(1) << fixed << damage << " damage!" << endl;
+	Sleep(1500);
+}
+
+void DisplayRoundResults(const string fighter1, const double hp1, const string fighter2, const double hp2) {
+	cout << endl;
+	cout << "_______Round Results_______" << endl;
+	cout << fighter1 << " (P1) has " << hp1 << " health points remaining." << endl;
+	cout << fighter2 << " (CPU) has " << hp2 << " health points remaining." << endl << flush;
+}
+
+void DisplayEndGame() {
+	cout << "\n\n";
+	cout << "****************************" << endl;
+	cout << "            GAME!           " << endl;
+	cout << "****************************" << endl;
+	cout << endl << flush;
+
+	PressEnterToContinue();
+}
+
+// Shows the user how many experience points they earned for the match
+// Note: This function uses RNG() which is not provided.
+void DisplayExperiencePoints(const bool playerWon, const double finalHP) {
+	int xp = 30;
+	int healthBonus = 0;
+	if (finalHP > 0) {
+		healthBonus = (int) finalHP;
+	}
+
+	cout << "\n__Exp. Summary_____" << endl;
+	if (playerWon) {
+		//TODO: xp += RNG(30, 60);
+		cout << setw(20) << left << "Win:" << "+" << xp << " xp" << endl;
+	}
+	else {
+		//TODO: xp += RNG(0, 30);
+		cout << setw(20) << left << "You tried:" << "+" << xp << " xp" << endl;
+	}
+	cout << setw(20) << left << "Health Bonus:" << "+" << healthBonus << " xp" << endl;
+	cout << "." << endl;
+	xp += healthBonus;
+	cout << setw(20) << left << "Total:" << "+" << xp << " xp" << endl;
+	cout << endl;
+	cout << "Thanks for playing!\n" << endl;
+}
