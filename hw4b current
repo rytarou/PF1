@@ -1,0 +1,116 @@
+// CSCE 2004
+// Homework 4b
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <string>
+#include <chrono>
+#include <thread>
+
+using namespace std;
+
+// Fighter names
+const string FIGHTER_LINK = "Link";
+const string FIGHTER_SAMUS = "Samus";
+const string FIGHTER_PIKACHU = "Pikachu";
+const string FIGHTER_KING_DEDEDE = "King_Dedede";	// This can be one word to make string reading easier
+const string LOWER_LINK = "link";
+const string LOWER_SAMUS = "samus";
+const string LOWER_PIKACHU = "pikachu";
+const string LOWER_KING_DEDEDE = "king_dedede";
+
+// Starting Health Points
+const double MAX_HP_LINK = 75.0;
+const double MAX_HP_SAMUS = 70.0;
+const double MAX_HP_PIKACHU = 55.0;
+const double MAX_HP_KING_DEDEDE = 100.0;
+
+// Attacks
+const int ATTACK = 1;
+const int SPECIAL_MOVE = 2;
+
+// Attack Damage
+const double AD_LINK = 15.5;
+const double AD_SAMUS = 11.9;
+const double AD_PIKACHU = 14.5;
+const double AD_KING_DEDEDE = 20.5;
+
+// Special Move Damage
+const double SD_LINK = 35.6;
+const double SD_SAMUS = 49.1;
+const double SD_PIKACHU = 39.5;
+const double SD_KING_DEDEDE = 30.2;
+
+// Which player? Constants
+const int P1 = 1;
+const int CPU = 2;
+
+// Other variables
+const string PROMPT = " >";
+const int bufferSize = 256;
+char buffer[bufferSize];
+
+// Headers for provided functions
+void PressEnterToContinue();
+void Sleep(const unsigned int _millis);
+bool GetAttack(const int whichPlayer, int &attackChoice, bool &recovering);
+void ReportDamage(const string fighter1, const int attackChoice, double damage, const string fighter2);
+void DisplayRoundResults(const string fighter1, const double hp1, const string fighter2, const double hp2);
+void DisplayEndGame();
+void DisplayExperiencePoints(const bool playerWon, const double finalHP);
+
+
+
+// ***************************************
+// These function descriptions are listed
+// in the order of their calling
+// inside the main function
+// ***************************************
+
+//---------------------------------------------------------------------------
+// Name: ToLowerCase
+// Parameters: const string input
+// Returns: string - the all-lowercase string
+// Purpose: This function should be used to convert a string to a
+// lowercase string. e.g. ToLowerCase("dEdEDe") returns "dedede"
+//---------------------------------------------------------------------------
+string ToLowerCase(string input) {
+
+    for (unsigned int i = 0; i < input.length(); i++) {
+        if ('A' <= input[i] && input[i] <= 'Z')
+            input[i] = tolower(input[i]);
+    }
+    return input;
+}
+
+
+
+//---------------------------------------------------------------------------
+// Name: ChooseFighters
+// Parameters: ref string player, ref string opponent
+// Returns: none
+// Purpose: This function should ask the user which fighter they want, as
+// well as who they want to fight against. If an invalid input is given,
+// keep asking until a valid input is provided.
+// In addition, it should not matter what letter-case the user uses, i.e.
+// entering "pIkAcHu" should set the appropriate string to "pikachu".
+// The capitalization can be corrected in the SetupFighter function.
+// Consider starting with ToLowerCase()
+//---------------------------------------------------------------------------
+
+void ChooseFighters(string playerFighter, string opponentFighter) {
+
+    cout << "Choose your fighter!\nLink\nSamus\nPikachu\nKing_DeDeDe\n";
+    cin >> playerFighter;
+    playerFighter = ToLowerCase(playerFighter);
+    while (playerFighter != "link" && playerFighter != "samus" && playerFighter != "pikachu" && playerFighter != "king_dedede")
+    {
+        cout << "Your choice is invalid go back and choose a correct fighter!\n";
+        cin >> playerFighter;
+        playerFighter = ToLowerCase(playerFighter);
+    }
+    cout << "Choose your fighter!\nLink\nSamus\nPikachu\nKing_DeDeDe\n";
+    cin >> opponentFighter;
+    opponentFighter = ToLowerCase(opponentFighter);
+    while (opponentFighter != "link" && opponentFighter != "samus" && opponentFighter != "pikachu" &&
+ 
