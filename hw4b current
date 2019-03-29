@@ -273,7 +273,7 @@ int main() {
     srand((unsigned int) time(NULL));
 
     // Welcome message
-    cout << "Caleb Stinebaugh PF1 Homework 4B 3/28/2019\n";
+    cout << "Caleb Stinebaugh PF1 Homework 4B 3/28/2019\n 010700049\n";
     cout << endl;
     cout << "----------===================================----------" << endl;
     cout << "                   SUPER SMASH BROS.         " << endl;
